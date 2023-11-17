@@ -1,18 +1,20 @@
 ﻿using AutoMapper;
-using Mardev.Arq.Services.Product.Contracts.Dtos;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Mardev.Arq.Services.Product.Api.Installers
+namespace Mardev.Arq.Shared.Api.Automapper
 {
     public static class AutomapperInstaller
     {
-        public static void AddCustomAutomapper(this WebApplicationBuilder builder)
+        public static void AddCustomAutomapper(this WebApplicationBuilder builder, IEnumerable<Profile> profiles)
         {
             MapperConfiguration mapperConfig = new(
                 cfg =>
                 {
-                    cfg.AddProfile(new AutoMapperContractsProfile());
-                    //cfg.AddProfile(new AutoMapperMessagesProfile());
-                    //cfg.AddProfile(new AutoMapperExternalServicesProfile());
+                    foreach (var profile in profiles)
+                    {
+                        cfg.AddProfile(profile);
+                    }
                 });
 
             IMapper mapper = new Mapper(mapperConfig);
@@ -23,13 +25,6 @@ namespace Mardev.Arq.Services.Product.Api.Installers
             builder.Services.Add(new ServiceDescriptor(typeof(IMapper),
                 sp => new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService),
                 ServiceLifetime.Transient));
-        }
-    }
-    public class AutoMapperContractsProfile : Profile
-    {
-        public AutoMapperContractsProfile()
-        {
-            CreateMap<ProductDto, Contracts.ProductGetByIdResponse>().ReverseMap();
         }
     }
 

@@ -1,8 +1,10 @@
 
-using Microsoft.OpenApi.Models;
-using Mardev.Arq.Shared.Api.Swagger.Installers;
-using Mardev.Arq.Shared.Api.ApiVersioning;
+using AutoMapper;
 using Mardev.Arq.Services.Identity.Api.Installers;
+using Mardev.Arq.Shared.Api.ApiVersioning;
+using Mardev.Arq.Shared.Api.Automapper;
+using Mardev.Arq.Shared.Api.Swagger.Installers;
+using Microsoft.OpenApi.Models;
 
 
 namespace Mardev.Arq.Services.Identity.Api
@@ -12,6 +14,9 @@ namespace Mardev.Arq.Services.Identity.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.AddCustomAutomapper(new List<Profile> { new AutoMapperContractsProfile() });
+
 
             builder.Services.AddControllers();
             builder.AddApiVersioning();

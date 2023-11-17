@@ -1,8 +1,10 @@
 
-using Mardev.Arq.Shared.Api.Swagger.Installers;
-using Mardev.Arq.Shared.Api.ApiVersioning;
-using Microsoft.OpenApi.Models;
+using AutoMapper;
 using Mardev.Arq.Services.Product.Api.Installers;
+using Mardev.Arq.Shared.Api.ApiVersioning;
+using Mardev.Arq.Shared.Api.Automapper;
+using Mardev.Arq.Shared.Api.Swagger.Installers;
+using Microsoft.OpenApi.Models;
 
 namespace Mardev.Arq.Services.Product.Api
 {
@@ -16,15 +18,15 @@ namespace Mardev.Arq.Services.Product.Api
 
 
             //Infra
-            builder.AddCustomAutomapper();
+            builder.AddCustomAutomapper(new List<Profile> { new AutoMapperContractsProfile() });
 
             builder.Services.AddControllers();
             builder.AddApiVersioning();
             builder.AddSwagger(new OpenApiInfo()
-                {
-                    Title = "Product API",
-                    Description = @"Exposes endpoints to handle products.",
-                });
+            {
+                Title = "Product API",
+                Description = @"Exposes endpoints to handle products.",
+            });
 
             var app = builder.Build();
 
