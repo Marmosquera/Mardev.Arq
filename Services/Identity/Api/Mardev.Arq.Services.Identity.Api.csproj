@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Api\Mardev.Arq.Shared.Api.csproj" />
+    <ProjectReference Include="..\Business\Mardev.Arq.Services.Identity.Business.csproj" />
+    <ProjectReference Include="..\Contracts\Mardev.Arq.Services.Identity.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

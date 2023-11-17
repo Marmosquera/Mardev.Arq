@@ -2,6 +2,7 @@
 using Microsoft.OpenApi.Models;
 using Mardev.Arq.Shared.Api.Swagger.Installers;
 using Mardev.Arq.Shared.Api.ApiVersioning;
+using Mardev.Arq.Services.Identity.Api.Installers;
 
 
 namespace Mardev.Arq.Services.Identity.Api
@@ -12,8 +13,6 @@ namespace Mardev.Arq.Services.Identity.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
             builder.AddApiVersioning();
             builder.AddSwagger(new OpenApiInfo()
@@ -21,18 +20,14 @@ namespace Mardev.Arq.Services.Identity.Api
                 Title = "Identity API",
                 Description = @"Exposes endpoints to handle identities.",
             });
+            builder.AddDependencies();
 
             var app = builder.Build();
 
             app.SetupSwagger();
-
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
         }
     }
