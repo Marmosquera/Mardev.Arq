@@ -1,4 +1,7 @@
 
+using Mardev.Arq.Shared.Api.Swagger.Installers;
+using Mardev.Arq.Shared.Api.ApiVersioning;
+using Microsoft.OpenApi.Models;
 using Mardev.Arq.Services.Product.Api.Installers;
 
 namespace Mardev.Arq.Services.Product.Api
@@ -17,7 +20,11 @@ namespace Mardev.Arq.Services.Product.Api
 
             builder.Services.AddControllers();
             builder.AddApiVersioning();
-            builder.AddSwagger();
+            builder.AddSwagger(new OpenApiInfo()
+                {
+                    Title = "Product API",
+                    Description = @"Exposes endpoints to handle products.",
+                });
 
             var app = builder.Build();
 
@@ -26,7 +33,6 @@ namespace Mardev.Arq.Services.Product.Api
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

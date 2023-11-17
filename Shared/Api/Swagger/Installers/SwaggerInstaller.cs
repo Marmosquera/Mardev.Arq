@@ -1,14 +1,17 @@
 ﻿using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
-namespace Mardev.Arq.Services.Product.Api.Installers
+namespace Mardev.Arq.Shared.Api.Swagger.Installers
 {
     public static class SwaggerInstaller
     {
 
-        public static void AddSwagger(this WebApplicationBuilder builder)
+        public static void AddSwagger(this WebApplicationBuilder builder, OpenApiInfo info)
         {
             var sp = builder.Services.BuildServiceProvider();
             var apiVersionProvider = sp.GetRequiredService<IApiVersionDescriptionProvider>();
@@ -20,7 +23,7 @@ namespace Mardev.Arq.Services.Product.Api.Installers
                 {
                     c.SwaggerDoc(
                         description.GroupName,
-                        CreateVersionInfo(description));
+                        CreateVersionInfo(description, info));
                 }
 
                 //c.AddServer(new OpenApiServer
@@ -36,16 +39,16 @@ namespace Mardev.Arq.Services.Product.Api.Installers
                 //});
 
                 // Enable XML comments
-                /*List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
+                List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
                 xmlFiles.ForEach(xmlFile =>
                 {
-                    c.SchemaFilter<ExamplesSchemaFilter>(new System.Xml.XPath.XPathDocument(xmlFile));
+                    //c.SchemaFilter<ExamplesSchemaFilter>(new System.Xml.XPath.XPathDocument(xmlFile));
                     c.IncludeXmlComments(xmlFile);
                 });
-                c.SchemaFilter<ContractsExamplesSchemaFilter>();
-                c.CustomSchemaIds(x => x.Name.ToSnakeCase());
+                //c.SchemaFilter<ContractsExamplesSchemaFilter>();
+                //c.CustomSchemaIds(x => x.Name.ToSnakeCase());
                 c.EnableAnnotations();
-                c.CustomOperationIds(apiDesc =>
+                /*c.CustomOperationIds(apiDesc =>
                 {
                     return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo)
                         ? (methodInfo.DeclaringType?.Name.Replace("Controller", string.Empty) + methodInfo.Name).ToSnakeCase()
@@ -102,15 +105,9 @@ namespace Mardev.Arq.Services.Product.Api.Installers
 
         }
 
-        private static OpenApiInfo CreateVersionInfo(ApiVersionDescription description)
+        private static OpenApiInfo CreateVersionInfo(ApiVersionDescription description, OpenApiInfo info)
         {
-            var info = new OpenApiInfo()
-            {
-                Title = "Product API",
-                Description = @"Exposes endpoints to handle products.",
-                Version = description.ApiVersion.ToString(),
-            };
-
+            info.Version = description.ApiVersion.ToString();
             if (description.IsDeprecated)
             {
                 info.Description += " This API version has been deprecated.";

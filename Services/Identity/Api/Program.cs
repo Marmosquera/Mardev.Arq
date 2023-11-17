@@ -1,4 +1,9 @@
 
+using Microsoft.OpenApi.Models;
+using Mardev.Arq.Shared.Api.Swagger.Installers;
+using Mardev.Arq.Shared.Api.ApiVersioning;
+
+
 namespace Mardev.Arq.Services.Identity.Api
 {
     public class Program
@@ -10,18 +15,16 @@ namespace Mardev.Arq.Services.Identity.Api
             // Add services to the container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.AddApiVersioning();
+            builder.AddSwagger(new OpenApiInfo()
+            {
+                Title = "Identity API",
+                Description = @"Exposes endpoints to handle identities.",
+            });
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.SetupSwagger();
 
             app.UseHttpsRedirection();
 

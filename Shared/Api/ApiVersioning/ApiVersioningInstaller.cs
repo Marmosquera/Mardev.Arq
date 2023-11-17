@@ -1,8 +1,11 @@
-namespace Mardev.Arq.Services.Product.Api.Installers
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
+
+namespace Mardev.Arq.Shared.Api.ApiVersioning
 {
     public static class ApiVersioningInstaller
     {
-
         public static void AddApiVersioning(this WebApplicationBuilder builder)
         {
             var apiVersioningBuilder =  builder.Services.AddApiVersioning(s =>
@@ -19,7 +22,5 @@ namespace Mardev.Arq.Services.Product.Api.Installers
 
             builder.Services.AddEndpointsApiExplorer();
         }
-
-
     }
 }
