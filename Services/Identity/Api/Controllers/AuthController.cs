@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Mardev.Arq.Services.Identity.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthenticationBusiness _authenticationBusiness;
