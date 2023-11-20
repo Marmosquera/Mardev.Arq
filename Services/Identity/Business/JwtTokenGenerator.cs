@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Mardev.Arq.Shared.Contracts;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,7 +9,7 @@ namespace Mardev.Arq.Services.Identity.Business
 {
     public interface IJwtTokenGenerator
     {
-        string GenerateToken(string userId, IEnumerable<string> roles);
+        string GenerateToken(ApplicationUser user);
     }
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
@@ -18,18 +19,20 @@ namespace Mardev.Arq.Services.Identity.Business
             _jwtOptions = jwtOptions.Value;
         }
 
-        public string GenerateToken(string userId, IEnumerable<string> roles)
+        public string GenerateToken(ApplicationUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var key = Encoding.ASCII.GetBytes(GetKey(_jwtOptions.Secret, 32));
+            var key = Encoding.ASCII.GetBytes(Repeat(_jwtOptions.Secret, 32));
 
             var claimList = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Sub, userId),
+                new(JwtRegisteredClaimNames.Sub, user.UserId),
+                new(JwtRegisteredClaimNames.Name, user.Name),
+                new(JwtRegisteredClaimNames.Email, user.Email),
             };
 
-            claimList.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            claimList.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -44,13 +47,16 @@ namespace Mardev.Arq.Services.Identity.Business
             return tokenHandler.WriteToken(token);
         }
 
-        private string GetKey(string key, int length)
+        private static string Repeat(string key, int length)
         {
             while (key.Length < length)
             {
                 key += key;
             }
-            return key.Substring(0, length);
+            return key[..length];
         }
+
+
     }
+
 }

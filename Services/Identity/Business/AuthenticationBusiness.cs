@@ -1,9 +1,5 @@
 ﻿using Mardev.Arq.Services.Identity.Business.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Mardev.Arq.Shared.Contracts;
 
 namespace Mardev.Arq.Services.Identity.Business
 {
@@ -26,8 +22,15 @@ namespace Mardev.Arq.Services.Identity.Business
             var result = new LoginResult();
             if (username == "p" && password == "p")
             {
-                result.UserId = "100";
-                result.Token = _jwtTokenGenerator.GenerateToken("100", new List<string> { "WebApp" });
+                var appUser = new ApplicationUser
+                {
+                    UserId = "100",
+                    Name = "UserName",
+                    Email = "m@m.com",
+                    Roles = new List<string> { "WebApp" }
+                };
+                result.UserId = appUser.UserId;
+                result.Token = _jwtTokenGenerator.GenerateToken(appUser);
             }
             return result;
         }

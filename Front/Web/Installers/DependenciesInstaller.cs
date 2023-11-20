@@ -1,4 +1,5 @@
 ﻿using Mardev.Arq.Front.Web.Services.Identity;
+using Mardev.Arq.Front.Web.Services.Product;
 
 namespace Mardev.Arq.Front.Web.Installers
 {
@@ -10,10 +11,15 @@ namespace Mardev.Arq.Front.Web.Installers
             builder.Services.AddHttpClient();
 
             builder.Services.AddHttpClient(nameof(IdentityService));
-
             builder.Services.Configure<IdentityServiceOptions>(
                 builder.Configuration.GetSection(nameof(IdentityServiceOptions)));
             builder.Services.AddScoped<IIdentityService, IdentityService>();
+
+            builder.Services.AddHttpClient(nameof(ProductsService));
+            builder.Services.Configure<ProductsServiceOptions>(
+                builder.Configuration.GetSection(nameof(ProductsServiceOptions)));
+            builder.Services.AddScoped<IProductsService, ProductsService>();
+
 
         }
     }

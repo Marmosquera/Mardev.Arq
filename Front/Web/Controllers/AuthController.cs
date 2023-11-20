@@ -1,6 +1,10 @@
 ﻿using Mardev.Arq.Front.Web.Models;
 using Mardev.Arq.Front.Web.Services.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Mardev.Arq.Front.Web.Controllers
 {
@@ -29,6 +33,11 @@ namespace Mardev.Arq.Front.Web.Controllers
             if (response.IsSuccess && !string.IsNullOrEmpty(response.Result?.Token))
             {
                 Response.Cookies.Append(TokenCookie, response.Result.Token);
+                var handler = new JwtSecurityTokenHandler();
+                var jwt = handler.ReadJwtToken(response.Result.Token);
+                var identity = new ClaimsIdentity(jwt.Claims, CookieAuthenticationDefaults.AuthenticationScheme, JwtRegisteredClaimNames.Name, ClaimTypes.Role);
+                var principal = new ClaimsPrincipal(identity);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -36,6 +45,13 @@ namespace Mardev.Arq.Front.Web.Controllers
                 TempData["error"] = response.Message;
                 return View(model);
             }
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            Response.Cookies.Delete(TokenCookie);
+            return RedirectToAction("Index", "Home");
         }
 
     }
